@@ -36,9 +36,13 @@ else:
 
 
 # Show Drafted Team
+# Show Drafted Team
 st.subheader("Your Drafted Team:")
-for idx, char in enumerate(st.session_state.drafted_team, start=1):
-    st.write(f"{idx}. {char}")
+
+for idx, char_name in enumerate(st.session_state.drafted_team, start=1):
+    char_dp = df[df['Name'] == char_name]['DP'].values[0]
+    st.write(f"{idx}. {char_name} (DP: {char_dp})")
+
 
 # Reset Button
 if st.button("Reset"):
