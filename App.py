@@ -32,7 +32,7 @@ else:
     selected = available_chars.sample(1).iloc[0]
     st.session_state.drafted_team.append(selected['Name'])
     st.session_state.remaining_dp -= selected['DP']
-    st.experimental_rerun()  # Force refresh after spin
+    st.rerun()  # Force refresh after spin
 
 
 # Show Drafted Team
