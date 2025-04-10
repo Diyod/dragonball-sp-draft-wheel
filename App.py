@@ -45,32 +45,31 @@ if len(st.session_state.players) > 0:
     player_columns = st.columns(len(st.session_state.players))
 
     for idx, (player, col) in enumerate(zip(st.session_state.players.keys(), player_columns)):
+        player_data = st.session_state.players[player]
+        color = player_colors[idx % len(player_colors)]
 
-    player_data = st.session_state.players[player]
-    color = player_colors[idx % len(player_colors)]
+        with col:
+            st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
+            st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
-    with col:
-        st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
-        st.write(f"Remaining DP: {player_data['remaining_dp']}")
+            available_chars = df[df['DP'] <= player_data['remaining_dp']]
 
-        available_chars = df[df['DP'] <= player_data['remaining_dp']]
+            if not available_chars.empty:
+                if st.button(f"Spin ({player})"):
+                    selected = available_chars.sample(1).iloc[0]
+                    player_data['drafted_team'].append(selected['Name'])
+                    player_data['remaining_dp'] -= selected['DP']
+                    st.rerun()
+            else:
+                st.warning("No characters left with enough DP!")
 
-        if not available_chars.empty:
-            if st.button(f"Spin ({player})"):
-                selected = available_chars.sample(1).iloc[0]
-                player_data['drafted_team'].append(selected['Name'])
-                player_data['remaining_dp'] -= selected['DP']
+            if st.button(f"Reset {player}"):
+                st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
                 st.rerun()
-        else:
-            st.warning("No characters left with enough DP!")
 
-        if st.button(f"Reset {player}"):
-            st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-            st.rerun()
-
-        st.write("Drafted Team:")
-        for idx, char_name in enumerate(player_data['drafted_team'], start=1):
-            char_dp = df[df['Name'] == char_name]['DP'].values[0]
-            st.write(f"{idx}. {char_name} (DP: {char_dp})")
+            st.write("Drafted Team:")
+            for idx, char_name in enumerate(player_data['drafted_team'], start=1):
+                char_dp = df[df['Name'] == char_name]['DP'].values[0]
+                st.write(f"{idx}. {char_name} (DP: {char_dp})")
 
 st.markdown("---")
