@@ -17,7 +17,6 @@ st.markdown("""
         }
         .player-name {
             font-size:24px;
-            color: #00BFFF;
             font-weight: bold;
         }
     </style>
@@ -28,51 +27,48 @@ st.markdown('<div class="title">Dragon Ball Sparking Zero - Tournament Draft</di
 if 'players' not in st.session_state:
     st.session_state.players = {}
 
-col1, col2 = st.columns([2, 1])
+player_name = st.text_input("Enter Player Name")
+if st.button("Add Player") and player_name:
+    if player_name not in st.session_state.players:
+        st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
 
-with col1:
-    player_name = st.text_input("Enter Player Name")
-    if st.button("Add Player") and player_name:
-        if player_name not in st.session_state.players:
-            st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
-
-with col2:
-    if st.button("Reset All"):
-        st.session_state.players = {}
-        st.rerun()
+if st.button("Reset All Drafts"):
+    for player in st.session_state.players.keys():
+        st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
+    st.rerun()
 
 st.markdown("---")
 
-# Display players dynamically
-for player in st.session_state.players.keys():
-    player_data = st.session_state.players[player]
+player_colors = ["#00BFFF", "#FF1493", "#32CD32", "#FFA500", "#FF4500", "#9400D3"]
 
-    with st.container():
-        st.markdown(f'<div class="player-name">{player}</div>', unsafe_allow_html=True)
+player_columns = st.columns(len(st.session_state.players))
+
+for idx, (player, col) in enumerate(zip(st.session_state.players.keys(), player_columns)):
+    player_data = st.session_state.players[player]
+    color = player_colors[idx % len(player_colors)]
+
+    with col:
+        st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
         st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
         available_chars = df[df['DP'] <= player_data['remaining_dp']]
 
-        colA, colB = st.columns(2)
-
-        with colA:
-            if not available_chars.empty:
-                if st.button(f"Spin the Wheel ({player})"):
-                    selected = available_chars.sample(1).iloc[0]
-                    player_data['drafted_team'].append(selected['Name'])
-                    player_data['remaining_dp'] -= selected['DP']
-                    st.rerun()
-            else:
-                st.warning("No characters left with enough DP!")
-
-        with colB:
-            if st.button(f"Reset {player}"):
-                st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
+        if not available_chars.empty:
+            if st.button(f"Spin ({player})"):
+                selected = available_chars.sample(1).iloc[0]
+                player_data['drafted_team'].append(selected['Name'])
+                player_data['remaining_dp'] -= selected['DP']
                 st.rerun()
+        else:
+            st.warning("No characters left with enough DP!")
+
+        if st.button(f"Reset {player}"):
+            st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
+            st.rerun()
 
         st.write("Drafted Team:")
         for idx, char_name in enumerate(player_data['drafted_team'], start=1):
             char_dp = df[df['Name'] == char_name]['DP'].values[0]
             st.write(f"{idx}. {char_name} (DP: {char_dp})")
 
-        st.markdown("---")
+st.markdown("---")
