@@ -42,6 +42,5 @@ for idx, char in enumerate(st.session_state.drafted_team, start=1):
 
 # Reset Button
 if st.button("Reset"):
-    st.session_state.remaining_dp = 15
-    st.session_state.drafted_team = []
-    st.experimental_rerun()
+    st.session_state.clear()
+    st.rerun()
