@@ -41,9 +41,11 @@ st.markdown("---")
 
 player_colors = ["#00BFFF", "#FF1493", "#32CD32", "#FFA500", "#FF4500", "#9400D3"]
 
-player_columns = st.columns(len(st.session_state.players))
+if len(st.session_state.players) > 0:
+    player_columns = st.columns(len(st.session_state.players))
 
-for idx, (player, col) in enumerate(zip(st.session_state.players.keys(), player_columns)):
+    for idx, (player, col) in enumerate(zip(st.session_state.players.keys(), player_columns)):
+
     player_data = st.session_state.players[player]
     color = player_colors[idx % len(player_colors)]
 
