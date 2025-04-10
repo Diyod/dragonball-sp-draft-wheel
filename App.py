@@ -28,10 +28,12 @@ available_chars = df[df['DP'] <= st.session_state.remaining_dp]
 if available_chars.empty:
     st.warning("No characters left with enough DP!")
 else:
-    if st.button("Spin the Wheel!"):
-        selected = available_chars.sample(1).iloc[0]
-        st.session_state.drafted_team.append(selected['Name'])
-        st.session_state.remaining_dp -= selected['DP']
+   if st.button("Spin the Wheel!"):
+    selected = available_chars.sample(1).iloc[0]
+    st.session_state.drafted_team.append(selected['Name'])
+    st.session_state.remaining_dp -= selected['DP']
+    st.experimental_rerun()  # Force refresh after spin
+
 
 # Show Drafted Team
 st.subheader("Your Drafted Team:")
