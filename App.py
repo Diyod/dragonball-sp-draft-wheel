@@ -2,49 +2,77 @@ import streamlit as st
 import pandas as pd
 import random
 
-# Load character data
-@st.cache_data
-def load_characters():
-    df = pd.read_csv("characters.csv")
-    return df
+st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
 
-df = load_characters()
+# Load characters
+df = pd.read_csv("characters.csv")
 
-# App Title
-st.title("Dragon Ball Sparking! Zero - Lucky Draft")
+st.markdown("""
+    <style>
+        .title {
+            font-size:50px;
+            color: orange;
+            text-align: center;
+            font-weight: bold;
+        }
+        .player-name {
+            font-size:24px;
+            color: #00BFFF;
+            font-weight: bold;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# Session State
-if 'remaining_dp' not in st.session_state:
-    st.session_state.remaining_dp = 15
-if 'drafted_team' not in st.session_state:
-    st.session_state.drafted_team = []
+st.markdown('<div class="title">Dragon Ball Sparking Zero - Tournament Draft</div>', unsafe_allow_html=True)
 
-# Show remaining DP
-st.subheader(f"Remaining DP: {st.session_state.remaining_dp}")
+if 'players' not in st.session_state:
+    st.session_state.players = {}
 
-# Filter available characters based on DP
-available_chars = df[df['DP'] <= st.session_state.remaining_dp]
+col1, col2 = st.columns([2, 1])
 
-if available_chars.empty:
-    st.warning("No characters left with enough DP!")
-else:
-   if st.button("Spin the Wheel!"):
-    selected = available_chars.sample(1).iloc[0]
-    st.session_state.drafted_team.append(selected['Name'])
-    st.session_state.remaining_dp -= selected['DP']
-    st.rerun()  # Force refresh after spin
+with col1:
+    player_name = st.text_input("Enter Player Name")
+    if st.button("Add Player") and player_name:
+        if player_name not in st.session_state.players:
+            st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
 
+with col2:
+    if st.button("Reset All"):
+        st.session_state.players = {}
+        st.rerun()
 
-# Show Drafted Team
-# Show Drafted Team
-st.subheader("Your Drafted Team:")
+st.markdown("---")
 
-for idx, char_name in enumerate(st.session_state.drafted_team, start=1):
-    char_dp = df[df['Name'] == char_name]['DP'].values[0]
-    st.write(f"{idx}. {char_name} (DP: {char_dp})")
+# Display players dynamically
+for player in st.session_state.players.keys():
+    player_data = st.session_state.players[player]
 
+    with st.container():
+        st.markdown(f'<div class="player-name">{player}</div>', unsafe_allow_html=True)
+        st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
-# Reset Button
-if st.button("Reset"):
-    st.session_state.clear()
-    st.rerun()
+        available_chars = df[df['DP'] <= player_data['remaining_dp']]
+
+        colA, colB = st.columns(2)
+
+        with colA:
+            if not available_chars.empty:
+                if st.button(f"Spin the Wheel ({player})"):
+                    selected = available_chars.sample(1).iloc[0]
+                    player_data['drafted_team'].append(selected['Name'])
+                    player_data['remaining_dp'] -= selected['DP']
+                    st.rerun()
+            else:
+                st.warning("No characters left with enough DP!")
+
+        with colB:
+            if st.button(f"Reset {player}"):
+                st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
+                st.rerun()
+
+        st.write("Drafted Team:")
+        for idx, char_name in enumerate(player_data['drafted_team'], start=1):
+            char_dp = df[df['Name'] == char_name]['DP'].values[0]
+            st.write(f"{idx}. {char_name} (DP: {char_dp})")
+
+        st.markdown("---")
