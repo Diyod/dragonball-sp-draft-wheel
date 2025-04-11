@@ -108,7 +108,7 @@ if len(st.session_state.players) > 0:
                 if st.button(f"Spin ({player})", ):
                     spin_list = available_chars['Name'].tolist()
 
-                    st.session_state[f'spinning_{player}'] = True
+                    # Removed spinning lock to allow parallel spins
 
                     for i in range(20, 0, -1):  # Simulate spinning
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
@@ -117,7 +117,7 @@ if len(st.session_state.players) > 0:
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
 
-                    st.session_state[f'spinning_{player}'] = False
+                    # Removed spinning unlock for parallel spins
 
                     player_data['drafted_team'].append(selected['Name'])
                     player_data['remaining_dp'] -= selected['DP']
@@ -125,7 +125,7 @@ if len(st.session_state.players) > 0:
             else:
                 st.warning("No characters left with enough DP!")
 
-            if st.button(f"Random Team ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
+            if st.button(f"Random Team ({player})", ):
                 player_data['remaining_dp'] = 15
                 player_data['drafted_team'] = []  # Clear previous team before randomizing
                 while player_data['remaining_dp'] > 0:
