@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import time  # Added for spin animation
 
 # Load character data
 @st.cache_data
