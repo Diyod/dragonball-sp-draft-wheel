@@ -96,7 +96,7 @@ for i, col in enumerate(cols):
                     spin_list = available_chars['Name'].tolist()
                     for _ in range(30):
                         status_area.markdown(f"### {random.choice(spin_list)}")
-                        st.experimental_sleep(SPIN_SPEED)
+                        time.sleep(SPIN_SPEED)
 
                     selected = available_chars.sample(1).iloc[0]
                     status_area.markdown(f"### 🌟 {selected['Name']} 🌟")
