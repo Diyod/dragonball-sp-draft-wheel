@@ -82,7 +82,7 @@ for i, col in enumerate(cols):
             
             # Status area
 # Define spin area placeholder
-spin_area = st.empty()
+            spin_area = st.empty()
             
             # Spin button
             if available_chars.empty:
