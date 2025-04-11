@@ -81,8 +81,8 @@ for i, col in enumerate(cols):
             available_chars = df[df['DP'] <= player['remaining_dp']]
             
             # Status area
-            # Define spin area placeholder
-                spin_area = st.empty()
+# Define spin area placeholder
+spin_area = st.empty()
             
             # Spin button
             if available_chars.empty:
