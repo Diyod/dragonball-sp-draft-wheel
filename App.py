@@ -1,152 +1,101 @@
 import streamlit as st
 import pandas as pd
-import random
-import time  # Added time for spinning animation
 
-# Wheel Speed Parameter
-WHEEL_SPIN_SPEED = 0.05  # Lower = Faster Spin, Higher = Slower Spin
+# Load character data
+@st.cache_data
+def load_characters():
+    df = pd.read_csv("characters.csv")
+    return df
 
-st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
+df = load_characters()
 
-# Load characters
-df = pd.read_csv("characters.csv")
+# App Title
+st.title("Dragon Ball Sparking Zero - Lucky Draft")
 
-st.markdown("""
-    <style>
-        .title {
-            font-size:50px;
-            color: orange;
-            text-align: center;
-            font-weight: bold;
-        }
-        .player-name {
-            font-size:24px;
-            font-weight: bold;
-        }
-        .global-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown('<div class="title">Dragon Ball Sparking Zero - Tournament Draft</div>', unsafe_allow_html=True)
-
-# No save file - using per session only
-
+# Initialize session state for players
+if 'player_count' not in st.session_state:
+    st.session_state.player_count = 2  # Default number of players
+    
 if 'players' not in st.session_state:
-    st.session_state.players = {}
+    # Create a dictionary for each player with their own state
+    st.session_state.players = {
+        i: {
+            'name': f"Player {i+1}",
+            'remaining_dp': 15,
+            'drafted_team': []
+        } for i in range(st.session_state.player_count)
+    }
 
-player_colors = ["#00BFFF", "#FF1493", "#32CD32", "#FFA500", "#FF4500", "#9400D3"]
-
-with st.form(key='add_player_form', clear_on_submit=True):
-    new_player_name = st.text_input("Enter Player Name")
-    submitted = st.form_submit_button("Add Player")
-
-    if submitted and new_player_name:
-        player_names = [name.strip() for name in new_player_name.split(',') if name.strip()]
-        for player_name in player_names:
-            if player_name and player_name not in st.session_state.players:
-                st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
-        # Removed saving to file for private session behavior
-
-st.markdown('<div class="global-buttons">', unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    if st.button("♻️ Reset All Drafts"):
-        for player in st.session_state.players.keys():
-            st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-        # Removed saving to file for private session behavior
-        # Removed rerun to avoid global UI refresh
-
-with col2:
-    if st.button("🚫 Remove All Players"):
-        st.session_state.players = {}
-        # Removed saving to file for private session behavior
+# Sidebar for settings
+with st.sidebar:
+    st.header("Settings")
+    new_player_count = st.number_input("Number of Players", min_value=1, max_value=8, value=st.session_state.player_count)
+    
+    # Update player count if changed
+    if new_player_count != st.session_state.player_count:
+        # Add new players if count increased
+        for i in range(st.session_state.player_count, new_player_count):
+            st.session_state.players[i] = {
+                'name': f"Player {i+1}",
+                'remaining_dp': 15,
+                'drafted_team': []
+            }
+        
+        # Remove players if count decreased
+        if new_player_count < st.session_state.player_count:
+            for i in range(new_player_count, st.session_state.player_count):
+                if i in st.session_state.players:
+                    del st.session_state.players[i]
+        
+        st.session_state.player_count = new_player_count
+    
+    # Reset all button
+    if st.button("Reset All Players"):
+        for i in range(st.session_state.player_count):
+            st.session_state.players[i]['remaining_dp'] = 15
+            st.session_state.players[i]['drafted_team'] = []
         st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Create player columns for the UI
+cols = st.columns(st.session_state.player_count)
 
-st.markdown("---")
-
-if len(st.session_state.players) > 0:
-    player_columns = st.columns(len(st.session_state.players))
-
-    for idx, (player, col) in enumerate(zip(st.session_state.players.keys(), player_columns)):
-        player_data = st.session_state.players[player]
-        color = player_colors[idx % len(player_colors)]
-
+# Display each player in their own column
+for i, col in enumerate(cols):
+    if i < st.session_state.player_count:
+        player = st.session_state.players[i]
+        
         with col:
-            spin_placeholder = st.empty()  # Define spin_placeholder at the top of the player column  # Define spin_placeholder at the top of the player column
-
-            player_name_col, remove_player_col = st.columns([10, 1])
-
-            with remove_player_col:
-                if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True, type='secondary'):
-                    del st.session_state.players[player]
-                    # Removed saving to file for private session behavior
-                    st.rerun()
-
-            with player_name_col:
-                st.markdown(
-        f'''
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="player-name" style="color:{color}">{player}</span>
-        </div>
-        ''',
-        unsafe_allow_html=True
-    )
-            st.write(f"Remaining DP: {player_data['remaining_dp']}")
-
-            available_chars = df[df['DP'] <= player_data['remaining_dp']]
-
-            if not available_chars.empty:
-                if st.button(f"Spin ({player})"):
-                    spin_list = available_chars['Name'].tolist()
-
-                    # Removed spinning lock to allow parallel spins
-
-                    for i in range(20, 0, -1):  # Simulate spinning
-                        spin_placeholder.markdown(f"### {random.choice(spin_list)}")
-                        time.sleep(WHEEL_SPIN_SPEED * (21 - i))
-
-                    selected = available_chars.sample(1).iloc[0]
-                    spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
-                    time.sleep(0.5)  # Small pause to emphasize result
-
-                    # Removed spinning unlock for parallel spins
-
-                    player_data['drafted_team'].append(selected['Name'])
-                    player_data['remaining_dp'] -= selected['DP']
-            else:
-                st.warning("No characters left with enough DP!")
-
-            if st.button(f"Random Team ({player})", ):
-                player_data['remaining_dp'] = 15
-                player_data['drafted_team'] = []  # Clear previous team before randomizing
-                while player_data['remaining_dp'] > 0:
-                    available_chars = df[df['DP'] <= player_data['remaining_dp']]
-                    if available_chars.empty:
-                        break
-                    selected = available_chars.sample(1).iloc[0]
-                    player_data['drafted_team'].append(selected['Name'])
-                    player_data['remaining_dp'] -= selected['DP']
-                # Removed saving to file for private session behavior
-                st.rerun()
-
-            if st.button(f"Reset {player}"):
-                st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-                st.rerun()
-
+            # Name input
+            player['name'] = st.text_input("Player Name", player['name'], key=f"name_{i}")
             
-
-            st.write("Drafted Team:")
-            for idx, char_name in enumerate(player_data['drafted_team'], start=1):
-                char_dp = df[df['Name'] == char_name]['DP'].values[0]
-                st.write(f"{idx}. {char_name} (DP: {char_dp})")
-
-st.markdown("---")
+            # Show remaining DP
+            st.subheader(f"Remaining DP: {player['remaining_dp']}")
+            
+            # Filter available characters based on DP
+            available_chars = df[df['DP'] <= player['remaining_dp']]
+            
+            # Spin button for this player
+            if available_chars.empty:
+                st.warning("No characters left!")
+                spin_disabled = True
+            else:
+                spin_disabled = False
+                
+            if st.button("Spin the Wheel!", key=f"spin_{i}", disabled=spin_disabled):
+                if not available_chars.empty:
+                    selected = available_chars.sample(1).iloc[0]
+                    player['drafted_team'].append(f"{selected['Name']} (DP: {selected['DP']})")
+                    player['remaining_dp'] -= selected['DP']
+                    st.session_state.players[i] = player  # Update player data
+            
+            # Show Drafted Team
+            st.subheader("Team:")
+            for idx, char in enumerate(player['drafted_team'], start=1):
+                st.write(f"{idx}. {char}")
+            
+            # Reset button for this player
+            if st.button("Reset", key=f"reset_{i}"):
+                player['remaining_dp'] = 15
+                player['drafted_team'] = []
+                st.session_state.players[i] = player  # Update player data
+                st.rerun()
