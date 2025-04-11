@@ -61,7 +61,7 @@ with col1:
         for player in st.session_state.players.keys():
             st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
         # Removed saving to file for private session behavior
-        st.rerun()
+        # Removed rerun to avoid global UI refresh
 
 with col2:
     if st.button("🚫 Remove All Players"):
@@ -116,12 +116,12 @@ if len(st.session_state.players) > 0:
 
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
+                    time.sleep(0.5)  # Small pause to emphasize result
 
                     # Removed spinning unlock for parallel spins
 
                     player_data['drafted_team'].append(selected['Name'])
                     player_data['remaining_dp'] -= selected['DP']
-                    st.rerun()
             else:
                 st.warning("No characters left with enough DP!")
 
