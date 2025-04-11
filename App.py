@@ -32,12 +32,7 @@ st.markdown("""
 
 st.markdown('<div class="title">Dragon Ball Sparking Zero - Tournament Draft</div>', unsafe_allow_html=True)
 
-SAVE_FILE = 'players.pkl'
-
-# Load saved players if exist
-if os.path.exists(SAVE_FILE):
-    with open(SAVE_FILE, 'rb') as f:
-        st.session_state.players = pickle.load(f)
+# No save file - using per session only
 
 if 'players' not in st.session_state:
     st.session_state.players = {}
@@ -52,8 +47,7 @@ with st.form(key='add_player_form', clear_on_submit=True):
         player_name = new_player_name.strip()
         if player_name and player_name not in st.session_state.players:
             st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
-        with open(SAVE_FILE, 'wb') as f:
-            pickle.dump(st.session_state.players, f)
+        # Removed saving to file for private session behavior
 
 st.markdown('<div class="global-buttons">', unsafe_allow_html=True)
 
