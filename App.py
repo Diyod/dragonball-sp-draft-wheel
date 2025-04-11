@@ -4,7 +4,7 @@ import random
 import time  # Added time for spinning animation
 
 # Wheel Speed Parameter
-WHEEL_SPIN_SPEED = 12.05  # Lower = Faster Spin, Higher = Slower Spin
+WHEEL_SPIN_SPEED = 0.05  # Lower = Faster Spin, Higher = Slower Spin
 
 st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
 
