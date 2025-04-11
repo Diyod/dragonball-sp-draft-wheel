@@ -44,9 +44,10 @@ with st.form(key='add_player_form', clear_on_submit=True):
     submitted = st.form_submit_button("Add Player")
 
     if submitted and new_player_name:
-        player_name = new_player_name.strip()
-        if player_name and player_name not in st.session_state.players:
-            st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
+        player_names = [name.strip() for name in new_player_name.split(',') if name.strip()]
+        for player_name in player_names:
+            if player_name and player_name not in st.session_state.players:
+                st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
         # Removed saving to file for private session behavior
 
 st.markdown('<div class="global-buttons">', unsafe_allow_html=True)
