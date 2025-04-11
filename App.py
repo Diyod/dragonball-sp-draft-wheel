@@ -96,7 +96,7 @@ if len(st.session_state.players) > 0:
                     st.rerun()
 
             with player_name_col:
-            st.markdown(
+                st.markdown(
         f'''
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <span class="player-name" style="color:{color}">{player}</span>
