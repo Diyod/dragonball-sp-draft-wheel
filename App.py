@@ -86,7 +86,7 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            player_name_col, remove_player_col = st.columns([40, 1])
+            remove_player_col, player_name_col = st.columns([1, 10])
 
             with remove_player_col:
                 if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True, type='secondary'):
