@@ -83,8 +83,7 @@ if len(st.session_state.players) > 0:
             with remove_player_col:
                 if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True, type='secondary'):
                     del st.session_state.players[player]
-                    with open(SAVE_FILE, 'wb') as f:
-                        pickle.dump(st.session_state.players, f)
+                    # Removed saving to file for private session behavior
                     st.rerun()
 
             with player_name_col:
@@ -109,7 +108,7 @@ if len(st.session_state.players) > 0:
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
                         import time
 
-    time.sleep(0.05 * (21 - i))
+                    time.sleep(0.05 * (21 - i))
 
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
