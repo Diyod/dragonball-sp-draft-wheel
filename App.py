@@ -92,7 +92,8 @@ for i, col in enumerate(cols):
                 spin_disabled = False
                 
             if st.button("Spin the Wheel!", key=f"spin_{i}", disabled=spin_disabled):
-                status_area = st.empty()  # Ensure local placeholder for each player spin
+                # Use spin_area for displaying the spinning result
+                status_area = spin_area
                 if not available_chars.empty:
                     spin_list = available_chars['Name'].tolist()
                     for _ in range(30):
