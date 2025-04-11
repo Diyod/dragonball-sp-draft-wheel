@@ -3,6 +3,9 @@ import pandas as pd
 import random
 import time  # Added time for spinning animation
 
+# Wheel Speed Parameter
+WHEEL_SPIN_SPEED = 0.05  # Lower = Faster Spin, Higher = Slower Spin
+
 st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
 
 # Load characters
@@ -106,9 +109,7 @@ if len(st.session_state.players) > 0:
 
                     for i in range(20, 0, -1):  # Simulate spinning
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
-                        import time
-
-                    time.sleep(0.05 * (21 - i))
+                        time.sleep(WHEEL_SPIN_SPEED * (21 - i))
 
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
