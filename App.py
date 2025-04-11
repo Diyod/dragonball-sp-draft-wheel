@@ -86,10 +86,10 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            remove_player_col, player_name_col = st.columns([1, 20])
+            remove_player_col, player_name_col = st.columns([1, 40])
 
             with remove_player_col:
-                if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True):
+                if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True, type='secondary'):
                     del st.session_state.players[player]
                     with open(SAVE_FILE, 'wb') as f:
                         pickle.dump(st.session_state.players, f)
