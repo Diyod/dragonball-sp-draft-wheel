@@ -89,7 +89,7 @@ if len(st.session_state.players) > 0:
             remove_player_col, player_name_col = st.columns([1, 20])
 
             with remove_player_col:
-                if st.button("❌", key=f"remove_{player}"):
+                if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True):
                     del st.session_state.players[player]
                     with open(SAVE_FILE, 'wb') as f:
                         pickle.dump(st.session_state.players, f)
