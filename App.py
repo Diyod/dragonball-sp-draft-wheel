@@ -81,7 +81,7 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            # spin_placeholder already defined above
+            spin_placeholder = st.empty()  # Define spin_placeholder at the top of the player column
 
             player_name_col, remove_player_col = st.columns([10, 1])
 
