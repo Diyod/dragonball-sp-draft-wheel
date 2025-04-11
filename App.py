@@ -132,11 +132,7 @@ if len(st.session_state.players) > 0:
                     pickle.dump(st.session_state.players, f)
                 st.rerun()
 
-            if st.button(f"Remove {player}"):
-                del st.session_state.players[player]
-                with open(SAVE_FILE, 'wb') as f:
-                    pickle.dump(st.session_state.players, f)
-                st.rerun()
+            
 
             st.write("Drafted Team:")
             for idx, char_name in enumerate(player_data['drafted_team'], start=1):
