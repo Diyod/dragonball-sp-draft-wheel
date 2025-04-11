@@ -81,7 +81,8 @@ for i, col in enumerate(cols):
             available_chars = df[df['DP'] <= player['remaining_dp']]
             
             # Status area
-            status_area = st.empty()
+            # Define spin area placeholder
+                spin_area = st.empty()
             
             # Spin button
             if available_chars.empty:
@@ -95,7 +96,7 @@ for i, col in enumerate(cols):
                 if not available_chars.empty:
                     spin_list = available_chars['Name'].tolist()
                     for _ in range(30):
-                        status_area.markdown(f"### {random.choice(spin_list)}")
+                        spin_area.markdown(f"### {random.choice(spin_list)}")
                         time.sleep(SPIN_SPEED / 1000)
 
                     selected = available_chars.sample(1).iloc[0]
