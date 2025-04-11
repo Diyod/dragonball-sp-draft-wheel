@@ -86,7 +86,7 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            player_name_col, remove_player_col = st.columns([20, 1])
+            player_name_col, remove_player_col = st.columns([10, 1])
 
             with remove_player_col:
                 if st.button("❌", key=f"remove_{player}", help="Remove Player", use_container_width=True, type='secondary'):
@@ -96,7 +96,7 @@ if len(st.session_state.players) > 0:
                     st.rerun()
 
             with player_name_col:
-                st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="display: flex; align-items: center; justify-content: space-between;"><span class="player-name" style="color:{color}">{player}</span></div>', unsafe_allow_html=True), unsafe_allow_html=True)
             st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
