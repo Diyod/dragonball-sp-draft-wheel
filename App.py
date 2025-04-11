@@ -139,8 +139,6 @@ if len(st.session_state.players) > 0:
 
             if st.button(f"Reset {player}"):
                 st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-                with open(SAVE_FILE, 'wb') as f:
-                    pickle.dump(st.session_state.players, f)
                 st.rerun()
 
             
