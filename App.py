@@ -106,11 +106,11 @@ if len(st.session_state.players) > 0:
 
             if not available_chars.empty:
                 if st.button(f"Spin ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
-                    st.session_state[f'spinning_{player}'] = True
                     spin_list = available_chars['Name'].tolist()
 
+                    st.session_state[f'spinning_{player}'] = True
+
                     for i in range(20, 0, -1):  # Simulate spinning
-                        st.session_state[f'spinning_{player}'] = True
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
                         time.sleep(WHEEL_SPIN_SPEED * (21 - i))
 
