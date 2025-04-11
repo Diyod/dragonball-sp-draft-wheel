@@ -81,7 +81,7 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            spin_placeholder = st.empty()  # Define spin_placeholder at the top of the player column
+            # spin_placeholder already defined above - no need to redefine  # Define spin_placeholder at the top of the player column
 
             player_name_col, remove_player_col = st.columns([10, 1])
 
@@ -107,7 +107,6 @@ if len(st.session_state.players) > 0:
             if not available_chars.empty:
                 if st.button(f"Spin ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
                     st.session_state[f'spinning_{player}'] = True
-                    spin_placeholder = st.empty()
                     spin_list = available_chars['Name'].tolist()
 
                     for i in range(20, 0, -1):  # Simulate spinning
