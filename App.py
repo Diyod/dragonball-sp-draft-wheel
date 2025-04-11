@@ -105,7 +105,7 @@ if len(st.session_state.players) > 0:
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
 
             if not available_chars.empty:
-                if st.button(f"Spin ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
+                if st.button(f"Spin ({player})", ):
                     spin_list = available_chars['Name'].tolist()
 
                     st.session_state[f'spinning_{player}'] = True
