@@ -21,6 +21,12 @@ st.markdown("""
             font-size:24px;
             font-weight: bold;
         }
+        .global-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -49,18 +55,26 @@ with st.form(key='add_player_form', clear_on_submit=True):
         with open(SAVE_FILE, 'wb') as f:
             pickle.dump(st.session_state.players, f)
 
-if st.button("Reset All Drafts"):
-    for player in st.session_state.players.keys():
-        st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-    with open(SAVE_FILE, 'wb') as f:
-        pickle.dump(st.session_state.players, f)
-    st.rerun()
+st.markdown('<div class="global-buttons">', unsafe_allow_html=True)
 
-if st.button("Remove All Players"):
-    st.session_state.players = {}
-    with open(SAVE_FILE, 'wb') as f:
-        pickle.dump(st.session_state.players, f)
-    st.rerun()
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("♻️ Reset All Drafts"):
+        for player in st.session_state.players.keys():
+            st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
+        with open(SAVE_FILE, 'wb') as f:
+            pickle.dump(st.session_state.players, f)
+        st.rerun()
+
+with col2:
+    if st.button("🚫 Remove All Players"):
+        st.session_state.players = {}
+        with open(SAVE_FILE, 'wb') as f:
+            pickle.dump(st.session_state.players, f)
+        st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
