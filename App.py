@@ -86,7 +86,17 @@ if len(st.session_state.players) > 0:
         color = player_colors[idx % len(player_colors)]
 
         with col:
-            st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
+            remove_player_col, player_name_col = st.columns([1, 5])
+
+            with remove_player_col:
+                if st.button("❌", key=f"remove_{player}"):
+                    del st.session_state.players[player]
+                    with open(SAVE_FILE, 'wb') as f:
+                        pickle.dump(st.session_state.players, f)
+                    st.rerun()
+
+            with player_name_col:
+                st.markdown(f'<div class="player-name" style="color:{color}">{player}</div>', unsafe_allow_html=True)
             st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
