@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
-import pickle
-import os
+import time  # Added time for spinning animation
 
 st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
 
@@ -64,8 +63,7 @@ with col1:
 with col2:
     if st.button("🚫 Remove All Players"):
         st.session_state.players = {}
-        with open(SAVE_FILE, 'wb') as f:
-            pickle.dump(st.session_state.players, f)
+        # Removed saving to file for private session behavior
         st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -109,7 +107,9 @@ if len(st.session_state.players) > 0:
 
                     for i in range(20, 0, -1):  # Simulate spinning
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
-                        time.sleep(0.05 * (21 - i))
+                        import time
+
+    time.sleep(0.05 * (21 - i))
 
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
