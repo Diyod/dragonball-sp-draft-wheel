@@ -87,12 +87,17 @@ for i, col in enumerate(cols):
                 
             if st.button("Spin the Wheel!", key=f"spin_{i}", disabled=spin_disabled):
                 if not available_chars.empty:
+                    spin_list = available_chars['Name'].tolist()
+                    for _ in range(30):
+                        status_area.markdown(f"### {random.choice(spin_list)}")
+                        time.sleep(0.05)
+
                     selected = available_chars.sample(1).iloc[0]
+                    status_area.markdown(f"### 🌟 {selected['Name']} 🌟")
+                    time.sleep(0.5)
+
                     player['drafted_team'].append(f"{selected['Name']} (DP: {selected['DP']})")
                     player['remaining_dp'] -= selected['DP']
-                    
-                    # Show notification of selection
-                    status_area.success(f"Selected: {selected['Name']} (DP: {selected['DP']})")
             
             # Show Drafted Team
             st.subheader("Team:")
