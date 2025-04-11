@@ -103,7 +103,7 @@ if len(st.session_state.players) > 0:
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
 
             if not available_chars.empty:
-                if st.button(f"Spin ({player})"):
+                if st.button(f"Spin ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
                     st.session_state[f'spinning_{player}'] = True
                     spin_placeholder = st.empty()
                     spin_list = available_chars['Name'].tolist()
@@ -124,7 +124,7 @@ if len(st.session_state.players) > 0:
             else:
                 st.warning("No characters left with enough DP!")
 
-            if st.button(f"Random Team ({player})"):
+            if st.button(f"Random Team ({player})", disabled=st.session_state.get(f'spinning_{player}', False)):
                 player_data['remaining_dp'] = 15
                 player_data['drafted_team'] = []  # Clear previous team before randomizing
                 while player_data['remaining_dp'] > 0:
@@ -137,7 +137,7 @@ if len(st.session_state.players) > 0:
                 # Removed saving to file for private session behavior
                 st.rerun()
 
-            if st.button(f"Reset {player}"):
+            if st.button(f"Reset {player}", disabled=st.session_state.get(f'spinning_{player}', False)):
                 st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
                 st.rerun()
 
