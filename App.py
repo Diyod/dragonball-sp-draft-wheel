@@ -105,7 +105,7 @@ if len(st.session_state.players) > 0:
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
 
             if not available_chars.empty:
-                if st.button(f"Spin ({player})", ):
+                if st.button(f"Spin ({player})"):
                     spin_list = available_chars['Name'].tolist()
 
                     # Removed spinning lock to allow parallel spins
@@ -138,7 +138,7 @@ if len(st.session_state.players) > 0:
                 # Removed saving to file for private session behavior
                 st.rerun()
 
-            if st.button(f"Reset {player}", disabled=st.session_state.get(f'spinning_{player}', False)):
+            if st.button(f"Reset {player}"):
                 st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
                 st.rerun()
 
