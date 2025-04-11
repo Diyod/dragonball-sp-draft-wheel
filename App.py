@@ -56,6 +56,12 @@ if st.button("Reset All Drafts"):
         pickle.dump(st.session_state.players, f)
     st.rerun()
 
+if st.button("Remove All Players"):
+    st.session_state.players = {}
+    with open(SAVE_FILE, 'wb') as f:
+        pickle.dump(st.session_state.players, f)
+    st.rerun()
+
 st.markdown("---")
 
 if len(st.session_state.players) > 0:
