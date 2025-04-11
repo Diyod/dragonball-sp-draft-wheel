@@ -3,6 +3,10 @@ import pandas as pd
 import random
 import time  # Added for spin animation
 
+# Spin speed settings
+SPIN_SPEED = 50  # milliseconds
+FINAL_DELAY = 500  # milliseconds after spin ends
+
 # Load character data
 @st.cache_data
 def load_characters():
@@ -92,11 +96,11 @@ for i, col in enumerate(cols):
                     spin_list = available_chars['Name'].tolist()
                     for _ in range(30):
                         status_area.markdown(f"### {random.choice(spin_list)}")
-                        time.sleep(0.05)
+                        st.experimental_sleep(SPIN_SPEED)
 
                     selected = available_chars.sample(1).iloc[0]
                     status_area.markdown(f"### 🌟 {selected['Name']} 🌟")
-                    time.sleep(0.5)
+                    st.experimental_sleep(FINAL_DELAY)
 
                     player['drafted_team'].append(f"{selected['Name']} (DP: {selected['DP']})")
                     player['remaining_dp'] -= selected['DP']
