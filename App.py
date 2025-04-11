@@ -88,20 +88,19 @@ if len(st.session_state.players) > 0:
             else:
                 st.warning("No characters left with enough DP!")
 
-   if st.button(f"Random Team ({player})"):
-    player_data['remaining_dp'] = 15
-    player_data['drafted_team'] = []
-    while player_data['remaining_dp'] > 0:
-        available_chars = df[df['DP'] <= player_data['remaining_dp']]
-        if available_chars.empty:
-            break
-        selected = available_chars.sample(1).iloc[0]
-        player_data['drafted_team'].append(selected['Name'])
-        player_data['remaining_dp'] -= selected['DP']
-    with open(SAVE_FILE, 'wb') as f:
-        pickle.dump(st.session_state.players, f)
-    st.rerun()
-
+            if st.button(f"Random Team ({player})"):
+                player_data['remaining_dp'] = 15
+                player_data['drafted_team'] = []
+                while player_data['remaining_dp'] > 0:
+                    available_chars = df[df['DP'] <= player_data['remaining_dp']]
+                    if available_chars.empty:
+                        break
+                    selected = available_chars.sample(1).iloc[0]
+                    player_data['drafted_team'].append(selected['Name'])
+                    player_data['remaining_dp'] -= selected['DP']
+                with open(SAVE_FILE, 'wb') as f:
+                    pickle.dump(st.session_state.players, f)
+                st.rerun()
 
             if st.button(f"Reset {player}"):
                 st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
