@@ -122,7 +122,7 @@ if len(st.session_state.players) > 0:
 
             if st.button(f"Random Team ({player})"):
                 player_data['remaining_dp'] = 15
-                player_data['drafted_team'] = []
+                player_data['drafted_team'] = []  # Clear previous team before randomizing
                 while player_data['remaining_dp'] > 0:
                     available_chars = df[df['DP'] <= player_data['remaining_dp']]
                     if available_chars.empty:
@@ -130,8 +130,7 @@ if len(st.session_state.players) > 0:
                     selected = available_chars.sample(1).iloc[0]
                     player_data['drafted_team'].append(selected['Name'])
                     player_data['remaining_dp'] -= selected['DP']
-                with open(SAVE_FILE, 'wb') as f:
-                    pickle.dump(st.session_state.players, f)
+                # Removed saving to file for private session behavior
                 st.rerun()
 
             if st.button(f"Reset {player}"):
