@@ -26,11 +26,18 @@ st.markdown('<div class="title">Dragon Ball Sparking Zero - Tournament Draft</di
 
 if 'players' not in st.session_state:
     st.session_state.players = {}
+if 'new_player_name' not in st.session_state:
+    st.session_state.new_player_name = ""
 
-player_name = st.text_input("Enter Player Name")
-if st.button("Add Player") and player_name:
-    if player_name not in st.session_state.players:
-        st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
+st.session_state.new_player_name = st.text_input("Enter Player Name", value=st.session_state.new_player_name)
+
+if st.session_state.new_player_name:
+    if st.button("Add Player") or st.session_state.new_player_name.endswith("\n"):
+        player_name = st.session_state.new_player_name.strip()
+        if player_name and player_name not in st.session_state.players:
+            st.session_state.players[player_name] = {"remaining_dp": 15, "drafted_team": []}
+        st.session_state.new_player_name = ""
+        st.experimental_rerun()
 
 if st.button("Reset All Drafts"):
     for player in st.session_state.players.keys():
