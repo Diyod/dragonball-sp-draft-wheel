@@ -96,11 +96,11 @@ for i, col in enumerate(cols):
                     spin_list = available_chars['Name'].tolist()
                     for _ in range(30):
                         status_area.markdown(f"### {random.choice(spin_list)}")
-                        time.sleep(SPIN_SPEED)
+                        time.sleep(SPIN_SPEED / 1000)
 
                     selected = available_chars.sample(1).iloc[0]
                     status_area.markdown(f"### 🌟 {selected['Name']} 🌟")
-                    st.experimental_sleep(FINAL_DELAY)
+                    time.sleep(FINAL_DELAY / 1000)
 
                     player['drafted_team'].append(f"{selected['Name']} (DP: {selected['DP']})")
                     player['remaining_dp'] -= selected['DP']
