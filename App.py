@@ -58,8 +58,7 @@ with col1:
     if st.button("♻️ Reset All Drafts"):
         for player in st.session_state.players.keys():
             st.session_state.players[player] = {"remaining_dp": 15, "drafted_team": []}
-        with open(SAVE_FILE, 'wb') as f:
-            pickle.dump(st.session_state.players, f)
+        # Removed saving to file for private session behavior
         st.rerun()
 
 with col2:
@@ -105,11 +104,18 @@ if len(st.session_state.players) > 0:
 
             if not available_chars.empty:
                 if st.button(f"Spin ({player})"):
+                    spin_placeholder = st.empty()
+                    spin_list = available_chars['Name'].tolist()
+
+                    for i in range(20, 0, -1):  # Simulate spinning
+                        spin_placeholder.markdown(f"### {random.choice(spin_list)}")
+                        time.sleep(0.05 * (21 - i))
+
                     selected = available_chars.sample(1).iloc[0]
+                    spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
+
                     player_data['drafted_team'].append(selected['Name'])
                     player_data['remaining_dp'] -= selected['DP']
-                    with open(SAVE_FILE, 'wb') as f:
-                        pickle.dump(st.session_state.players, f)
                     st.rerun()
             else:
                 st.warning("No characters left with enough DP!")
