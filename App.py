@@ -96,7 +96,9 @@ if len(st.session_state.players) > 0:
                     st.rerun()
 
             with player_name_col:
-    st.markdown(f'<div style="display: flex; align-items: center; justify-content: space-between;"><span class="player-name" style="color:{color}">{player}</span></div>', unsafe_allow_html=True), unsafe_allow_html=True)
+    st.markdown(f'<div style="display: flex; align-items: center; justify-content: space-between;">
+<span class="player-name" style="color:{color}">{player}</span>
+</div>', unsafe_allow_html=True)
             st.write(f"Remaining DP: {player_data['remaining_dp']}")
 
             available_chars = df[df['DP'] <= player_data['remaining_dp']]
