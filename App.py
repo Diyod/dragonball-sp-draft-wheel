@@ -4,7 +4,7 @@ import random
 import time  # Added time for spinning animation
 
 # Wheel Speed Parameter
-WHEEL_SPIN_SPEED = 0.05  # Lower = Faster Spin, Higher = Slower Spin
+WHEEL_SPIN_SPEED = 12.05  # Lower = Faster Spin, Higher = Slower Spin
 
 st.set_page_config(page_title="DB Sparking Zero - Tournament Draft", page_icon="🔥", layout="wide")
 
@@ -104,15 +104,19 @@ if len(st.session_state.players) > 0:
 
             if not available_chars.empty:
                 if st.button(f"Spin ({player})"):
+                    st.session_state[f'spinning_{player}'] = True
                     spin_placeholder = st.empty()
                     spin_list = available_chars['Name'].tolist()
 
                     for i in range(20, 0, -1):  # Simulate spinning
+                        st.session_state[f'spinning_{player}'] = True
                         spin_placeholder.markdown(f"### {random.choice(spin_list)}")
                         time.sleep(WHEEL_SPIN_SPEED * (21 - i))
 
                     selected = available_chars.sample(1).iloc[0]
                     spin_placeholder.markdown(f"### 🌟 {selected['Name']} 🌟")
+
+                    st.session_state[f'spinning_{player}'] = False
 
                     player_data['drafted_team'].append(selected['Name'])
                     player_data['remaining_dp'] -= selected['DP']
